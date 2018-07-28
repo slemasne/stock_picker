@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Portfolio Builder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container" class="form-group">
+    <div class="page-header">
+        <h1>Portfolio Builder</h1>
+    </div>
+    <br>
+    <label for="usr">Please answer the following questions, so we can build your personal portfolio:</label>
+    <br>
+    <form action="{{url_for('results')}}" method="POST">
+
+        <br>
+        <p> What is your risk tolerance?</p>
+
+        <select name="risk">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="very_high">Don't hold back!</option>
+        </select>
+
+        <br>
+        <br>
+        <p>What is your preferred market for investment?</p>
+
+        <select name="market">
+            <option value="UK">UK</option>
+            <option value="USA">USA</option>
+            <option value="EU">EU</option>
+            <option value="Asia">Asia</option>
+        </select>
+
+        <br>
+        <br>
+        <p> Select a name for your portfolio?</p>
+        <input type="text" class="form-control" style="width:15%" placeholder="Portfolio Name" name="portfolio_name"></input>
+
+        <br>
+
+
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+
+<br>
+<br>
+<footer class="footer" style="color:white">
+    <p> Click <a href="/test" style="color:white">here</a> for test page</p>
+</footer>
+</div>
+</body>
+
+</html>

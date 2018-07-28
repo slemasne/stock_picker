@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{postcode}} Portfolio Results</title>
+    <meta charset="UTF-8">
+    <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container" class="form-group">
+        <div class="page-header">
+
+            <h2>Results for portfolio: {{portfolio_name}}</h2>
+        </div>
+        <br> {{table| safe}}
+        <br>
+        <br>
+        <pr> The risk select was: {{risk}}</pr>
+        <br>
+        <p>Click <a href="/index">here</a> to go home</p>
+        <p>{{ datetime }}</p>
+        <br>
+        <br>
+    </div>
+</body>
+
+</html>
