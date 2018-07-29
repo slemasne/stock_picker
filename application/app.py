@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from selector import selector
 
 app = Flask(__name__)
 
@@ -14,7 +15,10 @@ def results():
         request.method == "POST"
         portfolio_name = request.form['portfolio_name']
         risk = request.form['risk']
-        return render_template('results.html', portfolio_name=portfolio_name, risk = risk)
+        market = request.form['market']
+        print (risk)
+        selection = selector(risk)
+        return render_template('results.html', portfolio_name=portfolio_name, risk = risk, market=market, selection=selection)
     except KeyError:
         print("Page has failed - please go back")
 
