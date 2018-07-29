@@ -2,59 +2,62 @@
 <html>
 
 <head>
-    <title>Portfolio Builder</title>
+    <title>Stock Selector</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 
 <body>
 <div class="container" class="form-group">
     <div class="page-header">
-        <h1>Portfolio Builder</h1>
+        <h1>Stock Selector</h1>
     </div>
     <br>
-    <label for="usr">Please answer the following questions, so we can build your personal portfolio:</label>
+    <label for="usr">Give us some ideas, to help select your stocks today:</label>
     <br>
     <form action="{{url_for('results')}}" method="POST">
 
         <br>
-        <p> What is your risk tolerance?</p>
+        <p> How do you feel about risk?</p>
 
         <select name="risk">
-            <option value="low">Low</option>
+            <option value="low">I still ride my bike with stabilizers (Low)</option>
             <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="very_high">Don't hold back!</option>
+            <option value="high">I'm feeling adventerous (Medium)</option>
+            <option value="very_high">Don't hold back! (Very High)</option>
         </select>
 
         <br>
         <br>
-        <p>What is your preferred market for investment?</p>
+        <p>Any regional preferences?</p>
 
         <select name="market">
             <option value="UK">UK</option>
             <option value="USA">USA</option>
             <option value="EU">EU</option>
             <option value="Asia">Asia</option>
+            <option value="Any">Any</option>
         </select>
 
+                <br>
+        <br>
+        <p>Like any particular strategies?</p>
+
+        <select name="strategy">
+            <option value="value">I love Value</option>
+            <option value="growth">I want growth</option>
+            <option value="momentum">Momentum</option>
+            <option value="momentum">Random</option>
+        </select>
         <br>
         <br>
-        <p> Select a name for your portfolio?</p>
-        <input type="text" class="form-control" style="width:15%" placeholder="Portfolio Name" name="portfolio_name"></input>
-
-        <br>
-
-
-
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" style="width:12%" class="btn btn-default">Submit</button>
     </form>
 </div>
 
 
 <br>
 <br>
-<footer class="footer" style="color:white">
-    <p> Click <a href="/test" style="color:white">here</a> for test page</p>
+<footer>
 </footer>
 </div>
 </body>

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from selector import selector
+from selector import stock_beta, beta_list
 
 app = Flask(__name__)
 
@@ -13,12 +13,12 @@ def index():
 def results():
     try:
         request.method == "POST"
-        portfolio_name = request.form['portfolio_name']
         risk = request.form['risk']
         market = request.form['market']
-        print (risk)
-        selection = selector(risk)
-        return render_template('results.html', portfolio_name=portfolio_name, risk = risk, market=market, selection=selection)
+        print (request.form)
+        beta = beta_list
+        print (beta)
+        return render_template('results.html', risk = risk, market=market, beta = beta)
     except KeyError:
         print("Page has failed - please go back")
 

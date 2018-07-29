@@ -26,8 +26,13 @@
         <b> Allocation:</b>
         <br>
         <br>
+        {% for dict_item in beta %}
+        {% for key, value in dict_item.items() %}
+        <pr>Check out {{key}} which has a beta of {{value}} </pr>
         <br>
-        <p>{{selection}}</p>
+        <br>
+        {% endfor %}
+        {% endfor %}
         <br>
         <p>Click <a href="/index">here</a> to go home</p>
         <br>
