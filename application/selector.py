@@ -2,19 +2,22 @@ import pyEX as p
 import random
 import pandas as pd
 
-def random_symbol(count = 3):
-    symbols = p.symbolsDF()
-    symbols = symbols.loc[symbols['type'] == "cs"]
-    symbols = [i for i in (p.symbolsDF()["symbol"])]
-    return random.sample(symbols, count)
+columns = ["beta","dividendYield","day200MovingAvg","marketcap","ytdChangePercent"]
 
-symbols = random_symbol()
+class stockSelector():
 
-def stock_beta(symbols_list):
-    betas = [{stock: p.stockStats(stock)["beta"]} for stock in symbols_list]
-    sorted_betas = sorted(betas, key=lambda x: list(x.values())[0])
-    return sorted_betas
+    def __init__(self, count, columns):
+        self.count = count
+        self.columns = columns
 
-beta_list =  stock_beta(symbols)
+    def random_symbols(self):
+        symbols = p.symbolsDF()
+        symbols = symbols.loc[symbols['type'] == "cs"]
+        symbols = [i for i in (p.symbolsDF()["symbol"])]
+        return random.sample(symbols, self.count)
 
-print (beta_list)
+    def stock_stats(self):
+        stats_list = [{stock :(list((p.stockStats(stock)[k]) for k in self.columns if k in p.stockStats(stock)))} for stock in self.random_symbols()]
+        stats_dict = {key :value for dict_ in stats_list for key, value in dict_.items()}
+        df_stock_stats = pd.DataFrame.from_dict(stats_dict, orient = "index", columns = columns)
+        return df_stock_stats

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from selector import stock_beta, beta_list
+from selector import stockSelector, columns
 
 app = Flask(__name__)
 
@@ -9,16 +9,17 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/results', methods=["POST", "GET"])
+@app.route('/results', methods=["POST"])
 def results():
     try:
         request.method == "POST"
         risk = request.form['risk']
         market = request.form['market']
+        result_count = request.form.get("number")
+        print(result_count)
         print (request.form)
-        beta = beta_list
-        print (beta)
-        return render_template('results.html', risk = risk, market=market, beta = beta)
+        df = stockSelector(2, columns).stock_stats()
+        return render_template('results.html', risk = risk, market=market, table = df.to_html(classes="table-striped"))
     except KeyError:
         print("Page has failed - please go back")
 
