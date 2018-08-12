@@ -24,21 +24,17 @@
   </div>
 </div>
         <br>
-        <br>
-        <br>
-        {% for dict_item in beta %}
-        {% for key, value in dict_item.items() %}
-        <pr>Check out {{key}} which has a beta of {{value}} </pr>
-        <br>
+        {% for ticker in df_value %}
+        <h4> {{ticker.0}}</h4>
+        <p> You might want to consider "{{ticker.0}}" as a potential investment opportunity. This stock has a beta of {{ticker.2}} compared to its peer/industry average of {{ticker.7}}</p>
         <br>
         {% endfor %}
-        {% endfor %}
         <br>
         <br>
-        <br>
-        <br>{{table| safe}}
-        <br>
+        <p> <u> Footnotes </u> </p>
         <p>Click <a href="/index">here</a> to go home</p>
+        <p>Click <a href="/index">here</a> to see table of raw input data</p>
+        <p>This page was generated at {{time}}</p>
         <br>
         <br>
     </div>

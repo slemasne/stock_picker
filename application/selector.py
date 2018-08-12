@@ -39,9 +39,12 @@ class loadData():
         stock_stats_df = self.__stock_stats()
         stock_stats_df = stock_stats_df[["companyName" ,"marketcap" ,"beta",
                                          "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
-        stock_stats_df["averageBeta"] = stock_stats_df["beta"].mean()
+
+        stock_stats_df["beta"] = round(stock_stats_df["beta"],2)
+
+        stock_stats_df["averageBeta"] = round(stock_stats_df["beta"].mean(),2)
         stock_stats_df["averagepeRatio"] = ((stock_stats_df["peRatioHigh"] + stock_stats_df["peRatioLow"] ) /2)
-        stock_stats_df["averageDividendYield"] = stock_stats_df["dividendYield"].mean()
+        stock_stats_df["averageDividendYield"] = round(stock_stats_df["dividendYield"].mean(),2)
         stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
         stock_stats_df['peRatioQuartiles'] = pd.qcut(stock_stats_df["averagepeRatio"], 4 ,labels=False, duplicates = "drop")
         stock_stats_df['dividendQuartiles'] = pd.qcut(stock_stats_df["dividendYield"], 4 ,labels=False, duplicates = "drop")
@@ -58,4 +61,8 @@ def stockSelector(risk, sector, strategy, count):
     elif strategy == "Income":
         strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == 3]
 
-    return strategy_filtered_data.sample(count)
+    try:
+        return strategy_filtered_data.sample(count)
+
+    except ValueError:
+        print("Unfortunately we have no results available, please try lower your search request")
