@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>{{postcode}} Portfolio Results</title>
+    <title>{{postcode}} Selector Results</title>
     <meta charset="UTF-8">
     <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -12,18 +12,18 @@
     <div class="container" class="form-group">
         <div class="page-header">
 
-            <h2>Results for portfolio: {{portfolio_name}}</h2>
+            <h2>Results</h2>
         </div>
+        <div class="panel panel-default" style="size:50%">
+  <div class="panel-heading">Your results were generated with the following in mind:</div>
+  <div class="panel-body">
+        <pr> These stocks have a  <b> <span style="color:#339966;"> {{risk}} </span> </b> risk categorization. They were selected
+            from the <b> <span style="color:#339966;"> {{sector}} </span> </b> sector. We have selected stocks which
+            would fit with a <b> <span style="color:#339966;"> {{strategy}} </span> </b> strategy. </pr>
         <br>
-        <b> The portfolio parameters are:</b>
+  </div>
+</div>
         <br>
-        <br>
-        <pr> Risk: {{risk}} </pr>
-        <br>
-        <pr> Sector: {{sector}} </pr>
-        <br>
-        <br>
-        <b> Allocation:</b>
         <br>
         <br>
         {% for dict_item in beta %}

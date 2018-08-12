@@ -1,58 +1,61 @@
-import pyEX as p
-import random
-import pandas as pd
 import requests
+import pandas as pd
 
-columns = ["beta","dividendYield","day200MovingAvg","marketcap","ytdChangePercent"]
 url = r"https://datahub.io/core/s-and-p-500-companies/r/constituents.csv"
-
-class stockStats():
-
-    def __init__(self, symbols, columns):
-        self.symbols = symbols
-        self.columns = columns
-
-    def stock_stats(self):
-        stats_list = [{stock :(list((p.stockStats(stock)[k]) for k in self.columns if k in p.stockStats(stock)))} for stock in self.symbols]
-        stats_dict = {key :value for dict_ in stats_list for key, value in dict_.items()}
-        df_stock_stats = pd.DataFrame.from_dict(stats_dict, orient = "index", columns = columns)
-        return df_stock_stats
 
 class loadData():
 
-    def __init__ (self, source):
+    def __init__ (self, sector, source):
+        self.sector = sector
         self.source = source
 
-    def random_symbols(self, sector, count):
+    def __collect_tickers(self):
         data = pd.read_csv(self.source)
-        data = data.query("Sector == '{}'".format(sector))
+        data = data.query("Sector == '{}'".format(self.sector))
         symbols = [i for i in (data["Symbol"])]
-        return random.sample(symbols, count)
+        return symbols
 
-class returnJSON():
+    def __return_tickers(self):
+        tickers_collection = self.__collect_tickers()
+        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=peers'.format \
+            (",".join(tickers_collection))
+        peers_data = requests.get(url)
+        peers_data_json = peers_data.json()
+        peers_dict_keys = list(peers_data_json.keys())
+        peers_dict_values = [item for sublist in [peers_data_json.get(i).get("peers") for i in peers_data_json.keys()] for item in sublist]
+        unique_tickers = list(set(peers_dict_keys + peers_dict_values))
+        return unique_tickers
 
-    def __init__(self, symbol_list):
-        self.symbol_list = symbol_list
+    def __stock_stats(self):
+        all_tickers = self.__return_tickers()
+        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats'.format(",".join(all_tickers))
+        stock_stats = requests.get(url)
+        stock_stats_json = stock_stats.json()
+        formatted_dict = [stock_stats_json[ticker]["stats"] for ticker in stock_stats_json]
+        stock_stats_df = pd.DataFrame(formatted_dict).set_index("symbol")
+        return stock_stats_df
 
-    def return_json(self):
-        symbols = ",".join(self.symbol_list)
-        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=company,stats'.format(symbols)
-        data = requests.get(url)
-        data = data.json()
-        return data
+    def formatted_stock_stats(self):
+        stock_stats_df = self.__stock_stats()
+        stock_stats_df = stock_stats_df[["companyName" ,"marketcap" ,"beta",
+                                         "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
+        stock_stats_df["averageBeta"] = stock_stats_df["beta"].mean()
+        stock_stats_df["averagepeRatio"] = ((stock_stats_df["peRatioHigh"] + stock_stats_df["peRatioLow"] ) /2)
+        stock_stats_df["averageDividendYield"] = stock_stats_df["dividendYield"].mean()
+        stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
+        stock_stats_df['peRatioQuartiles'] = pd.qcut(stock_stats_df["averagepeRatio"], 4 ,labels=False, duplicates = "drop")
+        stock_stats_df['dividendQuartiles'] = pd.qcut(stock_stats_df["dividendYield"], 4 ,labels=False, duplicates = "drop")
+        return stock_stats_df
 
-    def return_data_point(self):
-        results = self.return_json()
-        return_data_point = results[list(results.keys())[0]]["company"]["companyName"]
 
+def stockSelector(risk, sector, strategy, count):
+    data = loadData(sector, url).formatted_stock_stats()
+    risk_filtered_data = data[data["betaQuartiles"] == risk]
 
+    if strategy == "Value":
+        strategy_filtered_data = risk_filtered_data[risk_filtered_data["peRatioQuartiles"] == 0]
 
-data = loadData(url).random_symbols("Financials",3)
+    elif strategy == "Income":
+        strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == 3]
 
-results = returnJSON(data).return_json()
-
-company_name = results[list(results.keys())[0]]["company"]["companyName"]
-description = results[list(results.keys())[0]]["company"]["description"]
-ceo = results[list(results.keys())[0]]["company"]["CEO"]
-
-print (company_name, description, ceo)
+    return strategy_filtered_data.sample(count)

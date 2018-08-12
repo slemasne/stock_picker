@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from selector import stockStats, loadData, columns, url
+from selector import stockSelector, loadData, url
 
 app = Flask(__name__)
 
@@ -15,15 +15,14 @@ def results():
         request.method == "POST"
         risk = request.form['risk']
         sector = request.form['sector']
+        strategy = request.form['strategy']
         result_count = request.form.get("number")
         print(request.form)
 
-        ticker_list = loadData(url).random_symbols(sector, int(result_count))
+        data_df = stockSelector(int(risk), sector, strategy, int(result_count))
+        html_risk = (lambda x: "Low" if int(x) == 0 else "Medium" if int(x) == 1 else "High" if int(x) == 2 else "Very High")
 
-        df_stats = stockStats(ticker_list, columns).stock_stats()
-
-
-        return render_template('results.html', risk = risk, sector=sector, table = df_stats.to_html(classes="table-striped"))
+        return render_template('results.html', risk = html_risk(risk), sector=sector, strategy = strategy, table = data_df.to_html(classes="table-striped"))
     except KeyError:
         print("Page has failed - please go back")
 
