@@ -41,13 +41,17 @@ class loadData():
                                          "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
 
         stock_stats_df["beta"] = round(stock_stats_df["beta"],2)
+        stock_stats_df["dividendYield"] = round(stock_stats_df["dividendYield"], 2)
+        stock_stats_df["peRatio"] = round(((stock_stats_df["peRatioHigh"] + stock_stats_df["peRatioLow"]) / 2),2)
 
         stock_stats_df["averageBeta"] = round(stock_stats_df["beta"].mean(),2)
-        stock_stats_df["averagepeRatio"] = ((stock_stats_df["peRatioHigh"] + stock_stats_df["peRatioLow"] ) /2)
         stock_stats_df["averageDividendYield"] = round(stock_stats_df["dividendYield"].mean(),2)
+        stock_stats_df["averagePE"] = round(stock_stats_df["peRatio"].mean(), 2)
+
         stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
-        stock_stats_df['peRatioQuartiles'] = pd.qcut(stock_stats_df["averagepeRatio"], 4 ,labels=False, duplicates = "drop")
-        stock_stats_df['dividendQuartiles'] = pd.qcut(stock_stats_df["dividendYield"], 4 ,labels=False, duplicates = "drop")
+        stock_stats_df['dividendQuartiles'] = pd.qcut(stock_stats_df["dividendYield"], 4, labels=False, duplicates="drop")
+        stock_stats_df['peRatioQuartiles'] = pd.qcut(stock_stats_df["peRatio"], 4 ,labels=False, duplicates = "drop")
+
         return stock_stats_df
 
 
@@ -66,3 +70,11 @@ def stockSelector(risk, sector, strategy, count):
 
     except ValueError:
         print("Unfortunately we have no results available, please try lower your search request")
+
+
+
+test =  loadData("Financials", url).formatted_stock_stats()
+
+test2 = stockSelector(0,  "Materials", "Income", 2)
+
+print (test2)

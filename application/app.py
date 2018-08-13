@@ -9,10 +9,14 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-#@app.route('/table')
-#def index():
-#    data_df = stockSelector(int(risk), sector, strategy, int(result_count))
-#    return render_template('table.html', table = data_df.to_html(classes="table-striped"))
+@app.route('/table')
+def table():
+    risk = request.form['risk']
+    sector = request.form['sector']
+    strategy = request.form['strategy']
+    result_count = request.form.get("number")
+    data_df = stockSelector(int(risk), sector, strategy, int(result_count))
+    return render_template('table.html', table = data_df.to_html(classes="table-striped"))
 
 
 @app.route('/results', methods=["POST"])
@@ -28,7 +32,10 @@ def results():
         data_df = stockSelector(int(risk), sector, strategy, int(result_count))
         html_risk = (lambda x: "Low" if int(x) == 0 else "Medium" if int(x) == 1 else "High" if int(x) == 2 else "Very High")
 
-        df_value = [i for i in data_df.values.tolist()]
+        df_value =  list(data_df.values.tolist())
+
+        print (data_df.columns)
+        print (df_value)
 
         time = datetime.now().strftime('%I:%M%p on %b-%d')
 

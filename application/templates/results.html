@@ -12,30 +12,45 @@
     <div class="container" class="form-group">
         <div class="page-header">
 
-            <h2>Results</h2>
+            <h2>Selector Summary</h2>
         </div>
-        <div class="panel panel-default" style="size:50%">
-  <div class="panel-heading">Your results were generated with the following in mind:</div>
-  <div class="panel-body">
-        <pr> These stocks have a  <b> <span style="color:#339966;"> {{risk}} </span> </b> risk categorization. They were selected
-            from the <b> <span style="color:#339966;"> {{sector}} </span> </b> sector. We have selected stocks which
-            would fit with a <b> <span style="color:#339966;"> {{strategy}} </span> </b> strategy. </pr>
-        <br>
-  </div>
+        <div>
+
+         <h5>  Here is what you asked us to consider: </h5>
+<br>
+                    <ul>
+                        <li> These stocks have a  <b> <span style="color:#339966;"> {{risk}} </span> </b> risk categorization </li>
+                        <li> They were selected from the <b> <span style="color:#339966;"> {{sector}} </span> </b> sector </li>
+                        <li> We have selected stocks which would fit with a <b> <span style="color:#339966;"> {{strategy}} </span> </b> strategy</li>
+                    </ul>
+
+<br>
 </div>
+        <h5> Our recommendations... </h5>
+
         <br>
         {% for ticker in df_value %}
-        <h4> {{ticker.0}}</h4>
-        <p> You might want to consider "{{ticker.0}}" as a potential investment opportunity. This stock has a beta of {{ticker.2}} compared to its peer/industry average of {{ticker.7}}</p>
+
+               <div class="panel panel-default" style="size:50%">
+  <div class="panel-heading">{{ticker.0}}</div>
+  <div class="panel-body">
+<p> Take a look at "{{ticker.0}}" as a potential investment opportunity. This stock has a beta of <b>{{ticker.2}}</b> (versus a peer average of {{ticker.8}}). The stock also has a Dividend Yield of
+    <b> {{ticker.3}}% </b> (versus a peer average of {{ticker.9}}%) and a PE ratio of <b> {{ticker.7}} </b> (versus a peer average of {{ticker.10}}). </p>
+  </div>
+</div>
+
+
+
         <br>
         {% endfor %}
+        <h5> Footnotes: </h5>
         <br>
-        <br>
-        <p> <u> Footnotes </u> </p>
-        <p>Click <a href="/index">here</a> to go home</p>
-        <p>Click <a href="/index">here</a> to see table of raw input data</p>
-        <p>This page was generated at {{time}}</p>
-        <br>
+                            <ul>
+                        <li> Click <a href="/index">here</a> to go home </li>
+                        <li> Click <a href="/table">here</a> to see table of raw input data </li>
+                        <li> This page was generated at {{time}}</li>
+                    </ul>
+
         <br>
     </div>
 </body>
