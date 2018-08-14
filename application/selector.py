@@ -37,6 +37,7 @@ class loadData():
 
     def formatted_stock_stats(self):
         stock_stats_df = self.__stock_stats()
+
         stock_stats_df = stock_stats_df[["companyName" ,"marketcap" ,"beta",
                                          "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
 
@@ -54,6 +55,11 @@ class loadData():
 
         return stock_stats_df
 
+    def stock_stats_for_webpage(self):
+        stock_stats_for_webpage = self.formatted_stock_stats()
+        stock_stats_for_webpage = stock_stats_for_webpage.drop(columns=['betaQuartiles', 'dividendQuartiles', 'peRatioQuartiles', 'peRatioLow', 'peRatioHigh'])
+        return stock_stats_for_webpage
+
 
 def stockSelector(risk, sector, strategy, count):
     data = loadData(sector, url).formatted_stock_stats()
@@ -70,11 +76,3 @@ def stockSelector(risk, sector, strategy, count):
 
     except ValueError:
         print("Unfortunately we have no results available, please try lower your search request")
-
-
-
-test =  loadData("Financials", url).formatted_stock_stats()
-
-test2 = stockSelector(0,  "Materials", "Income", 2)
-
-print (test2)
