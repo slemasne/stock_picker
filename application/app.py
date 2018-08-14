@@ -43,8 +43,9 @@ def results():
 
         return response
 
-    except TypeError:
-        render_template('error.html')
+    except:
+
+        return render_template('error.html')
 
 if __name__ == '__main__':
     app.debug = True

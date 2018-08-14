@@ -33,11 +33,11 @@ class loadData():
         stock_stats_json = stock_stats.json()
         formatted_dict = [stock_stats_json[ticker]["stats"] for ticker in stock_stats_json]
         stock_stats_df = pd.DataFrame(formatted_dict).set_index("symbol")
+        stock_stats_df = stock_stats_df[(stock_stats_df != 0).all(1)]
         return stock_stats_df
 
     def formatted_stock_stats(self):
         stock_stats_df = self.__stock_stats()
-
         stock_stats_df = stock_stats_df[["companyName" ,"marketcap" ,"beta",
                                          "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
 
@@ -50,14 +50,12 @@ class loadData():
         stock_stats_df["averagePE"] = round(stock_stats_df["peRatio"].mean(), 2)
 
         stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
-        stock_stats_df['dividendQuartiles'] = pd.qcut(stock_stats_df["dividendYield"], 4, labels=False, duplicates="drop")
-        stock_stats_df['peRatioQuartiles'] = pd.qcut(stock_stats_df["peRatio"], 4 ,labels=False, duplicates = "drop")
 
         return stock_stats_df
 
     def stock_stats_for_webpage(self):
         stock_stats_for_webpage = self.formatted_stock_stats()
-        stock_stats_for_webpage = stock_stats_for_webpage.drop(columns=['betaQuartiles', 'dividendQuartiles', 'peRatioQuartiles', 'peRatioLow', 'peRatioHigh'])
+        stock_stats_for_webpage = stock_stats_for_webpage.drop(columns=['betaQuartiles', 'peRatioLow', 'peRatioHigh'])
         return stock_stats_for_webpage
 
 
@@ -66,13 +64,13 @@ def stockSelector(risk, sector, strategy, count):
     risk_filtered_data = data[data["betaQuartiles"] == risk]
 
     if strategy == "Value":
+        risk_filtered_data['peRatioQuartiles'] = pd.qcut(risk_filtered_data["peRatio"], 4, labels=False, duplicates="drop")
         strategy_filtered_data = risk_filtered_data[risk_filtered_data["peRatioQuartiles"] == 0]
 
     elif strategy == "Income":
+        risk_filtered_data['dividendQuartiles'] = pd.qcut(risk_filtered_data["dividendYield"], 4, labels=False, duplicates="drop")
         strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == 3]
 
-    try:
-        return strategy_filtered_data.sample(count)
+    return strategy_filtered_data.sample(count)
 
-    except ValueError:
-        print("Unfortunately we have no results available, please try lower your search request")
+
