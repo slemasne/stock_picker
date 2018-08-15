@@ -39,13 +39,15 @@ def results():
         time = datetime.now().strftime('%I:%M%p on %b-%d')
 
         response = make_response(render_template('results.html', risk = html_risk(risk), sector=sector, strategy = strategy, table = data_df.to_html(classes="table-striped"), time = time, df_value=df_value))
+
         response.set_cookie('sector', sector)
 
         return response
 
     except:
+        pass
 
-        return render_template('error.html')
+        #return render_template('error.html')
 
 if __name__ == '__main__':
     app.debug = True

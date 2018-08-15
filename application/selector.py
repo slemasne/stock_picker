@@ -33,7 +33,7 @@ class loadData():
         stock_stats_json = stock_stats.json()
         formatted_dict = [stock_stats_json[ticker]["stats"] for ticker in stock_stats_json]
         stock_stats_df = pd.DataFrame(formatted_dict).set_index("symbol")
-        stock_stats_df = stock_stats_df[(stock_stats_df != 0).all(1)]
+        #stock_stats_df = stock_stats_df[(stock_stats_df != 0).all(1)]
         return stock_stats_df
 
     def formatted_stock_stats(self):
@@ -65,12 +65,11 @@ def stockSelector(risk, sector, strategy, count):
 
     if strategy == "Value":
         risk_filtered_data['peRatioQuartiles'] = pd.qcut(risk_filtered_data["peRatio"], 4, labels=False, duplicates="drop")
-        strategy_filtered_data = risk_filtered_data[risk_filtered_data["peRatioQuartiles"] == 0]
+        strategy_filtered_data = risk_filtered_data[risk_filtered_data["peRatioQuartiles"] == risk_filtered_data["peRatioQuartiles"].min()]
 
     elif strategy == "Income":
         risk_filtered_data['dividendQuartiles'] = pd.qcut(risk_filtered_data["dividendYield"], 4, labels=False, duplicates="drop")
-        strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == 3]
+        strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == risk_filtered_data["dividendQuartiles"].max()]
 
     return strategy_filtered_data.sample(count)
-
 
