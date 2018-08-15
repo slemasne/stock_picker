@@ -28,18 +28,21 @@ class loadData():
 
     def __stock_stats(self):
         all_tickers = self.__return_tickers()
-        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats'.format(",".join(all_tickers))
-        stock_stats = requests.get(url)
-        stock_stats_json = stock_stats.json()
-        formatted_dict = [stock_stats_json[ticker]["stats"] for ticker in stock_stats_json]
-        stock_stats_df = pd.DataFrame(formatted_dict).set_index("symbol")
-        #stock_stats_df = stock_stats_df[(stock_stats_df != 0).all(1)]
-        return stock_stats_df
+        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats,company'.format(
+            ",".join(all_tickers))
+        request_data = requests.get(url)
+        request_json = request_data.json()
+
+        stock_stats_dict = [request_json[ticker]["stats"] for ticker in request_json]
+        stock_stats_df = pd.DataFrame(stock_stats_dict).set_index("symbol")
+
+        company_stats_dict = [request_json[ticker]["company"] for ticker in request_json]
+        company_stats_df = pd.DataFrame(company_stats_dict).set_index("symbol")
+
+        return pd.merge(company_stats_df, stock_stats_df)
 
     def formatted_stock_stats(self):
         stock_stats_df = self.__stock_stats()
-        stock_stats_df = stock_stats_df[["companyName" ,"marketcap" ,"beta",
-                                         "dividendYield" ,"returnOnEquity" ,"peRatioHigh" ,"peRatioLow"]]
 
         stock_stats_df["beta"] = round(stock_stats_df["beta"],2)
         stock_stats_df["dividendYield"] = round(stock_stats_df["dividendYield"], 2)
@@ -51,11 +54,15 @@ class loadData():
 
         stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
 
+
+        stock_stats_df = stock_stats_df[["companyName" ,"marketcap", "beta", "averageBeta",
+                                         "dividendYield", "averageDividendYield", "peRatio",
+                                         "averagePE", "betaQuartiles","returnOnEquity","description"]]
         return stock_stats_df
 
     def stock_stats_for_webpage(self):
         stock_stats_for_webpage = self.formatted_stock_stats()
-        stock_stats_for_webpage = stock_stats_for_webpage.drop(columns=['betaQuartiles', 'peRatioLow', 'peRatioHigh'])
+        stock_stats_for_webpage = stock_stats_for_webpage.drop(columns=['betaQuartiles','description'])
         return stock_stats_for_webpage
 
 

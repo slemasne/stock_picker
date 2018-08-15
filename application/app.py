@@ -45,9 +45,7 @@ def results():
         return response
 
     except:
-        pass
-
-        #return render_template('error.html')
+        return render_template('error.html')
 
 if __name__ == '__main__':
     app.debug = True
