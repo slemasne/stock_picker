@@ -1,3 +1,5 @@
 **Stock Picker**
 
-Add some details
+Simple app used to generate investment ideas:
+
+https://stock-selector.appspot.com/
