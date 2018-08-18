@@ -28,7 +28,7 @@ class loadData():
 
     def __stock_stats(self):
         all_tickers = self.__return_tickers()
-        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats,company'.format(
+        url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats,company,quote'.format(
             ",".join(all_tickers))
         request_data = requests.get(url)
         request_json = request_data.json()
@@ -39,7 +39,11 @@ class loadData():
         company_stats_dict = [request_json[ticker]["company"] for ticker in request_json]
         company_stats_df = pd.DataFrame(company_stats_dict).set_index("symbol")
 
-        return pd.merge(company_stats_df, stock_stats_df)
+        price_dict = [request_json[ticker]["quote"] for ticker in request_json]
+        price_df = pd.DataFrame(price_dict).set_index("symbol")
+
+        #return pd.merge([company_stats_df, stock_stats_df, price_df])
+        return company_stats_df.merge(stock_stats_df,on='symbol').merge(price_df,on='symbol')
 
     def formatted_stock_stats(self):
         stock_stats_df = self.__stock_stats()
@@ -57,7 +61,7 @@ class loadData():
 
         stock_stats_df = stock_stats_df[["companyName" ,"marketcap", "beta", "averageBeta",
                                          "dividendYield", "averageDividendYield", "peRatio",
-                                         "averagePE", "betaQuartiles","returnOnEquity","description"]]
+                                         "averagePE", "betaQuartiles","returnOnEquity","description","close"]]
         return stock_stats_df
 
     def stock_stats_for_webpage(self):
@@ -79,4 +83,10 @@ def stockSelector(risk, sector, strategy, count):
         strategy_filtered_data = risk_filtered_data[risk_filtered_data["dividendQuartiles"] == risk_filtered_data["dividendQuartiles"].max()]
 
     return strategy_filtered_data.sample(count)
+
+
+
+# Testing
+# data = loadData("Financials",url)
+# print(data.formatted_stock_stats())
 

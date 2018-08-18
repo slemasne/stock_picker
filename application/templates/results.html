@@ -32,11 +32,12 @@
         {% for ticker in df_value %}
 
                <div class="panel panel-default" style="size:50%">
-  <div class="panel-heading">{{ticker.0}}</div>
+                   <div class="panel-heading"> {{ticker.0}} </div>
   <div class="panel-body">
       <p> Take a look at <i>{{ticker.0}}</i> as a potential investment opportunity. {{ticker.10}}</p>
     <p> This stock has a beta of <b>{{ticker.2}}</b> (versus a peer average of {{ticker.3}}), with a Dividend Yield of
     <b> {{ticker.4}}% </b> (versus a peer average of {{ticker.5}}%) and a PE ratio of <b> {{ticker.6}} </b> (versus a peer average of {{ticker.7}}). </p>
+      <p>Latest price: ${{ticker.11}} </p>
   </div>
 </div>
 
