@@ -1,9 +1,5 @@
-runtime: python
-env: flex
-api_version: 1
-threadsafe: true
-runtime_config:
-        python_version: 3
+
+runtime: python37
 handlers:
 - url: /templates
   static_dir: templates
