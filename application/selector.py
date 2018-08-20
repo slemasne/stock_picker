@@ -58,6 +58,8 @@ class loadData():
 
         stock_stats_df['betaQuartiles'] = pd.qcut(stock_stats_df["beta"], 4 ,labels=False, duplicates = "drop")
 
+        stock_stats_df = stock_stats_df[~(stock_stats_df[['beta', 'dividendYield', 'peRatio']] == 0).any(axis=1)]
+
 
         stock_stats_df = stock_stats_df[["companyName" ,"marketcap", "beta", "averageBeta",
                                          "dividendYield", "averageDividendYield", "peRatio",
@@ -87,6 +89,7 @@ def stockSelector(risk, sector, strategy, count):
 
 
 # Testing
-# data = loadData("Financials",url)
-# print(data.formatted_stock_stats())
+#data = loadData("Financials",url)
+#print(data.formatted_stock_stats()["peRatio"]["NYCB"])
+
 
