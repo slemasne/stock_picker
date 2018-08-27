@@ -89,6 +89,7 @@ def stockSelector(risk, sector, strategy, count):
 
 
 # Testing
+
 #data = loadData("Financials",url)
 #print(data.formatted_stock_stats()["peRatio"]["NYCB"])
 
