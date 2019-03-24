@@ -2,26 +2,39 @@ from flask import Flask, render_template, request, make_response
 from selector import stockSelector, loadData, url
 from datetime import  datetime
 
-
-
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
+
+    """
+    Returns the index or main page of the application.
+    """
+
     return render_template('index.html')
 
 @app.route('/table')
 def table():
+
+    """
+    Returns HTML table of stocks and stats used in calculations.
+    """
+
     sector = request.cookies.get('sector')
 
     print ("This is the cookie: " + sector)
 
-    data_df = loadData(sector, url).stock_stats_for_webpage()
+    data_df = loadData(sector, url).formatted_stock_stats().drop(columns=['betaQuartiles','description'])
     return render_template('table.html', table = data_df.to_html(classes="table-striped"))
 
 @app.route('/results', methods=["POST"])
 def results():
+
+    """
+    Returns HTML page of results from selector.
+    """
+
     try:
         request.method == "POST"
 
