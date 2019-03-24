@@ -28,21 +28,16 @@ class loadData():
 
     def __stock_stats(self):
         all_tickers = self.__return_tickers()
+
         url = r'https://api.iextrading.com/1.0/stock/market/batch?symbols={}&types=stats,company,quote'.format(
             ",".join(all_tickers))
-        request_data = requests.get(url)
-        request_json = request_data.json()
 
-        stock_stats_dict = [request_json[ticker]["stats"] for ticker in request_json]
-        stock_stats_df = pd.DataFrame(stock_stats_dict).set_index("symbol")
+        request_json = requests.get(url).json()
 
-        company_stats_dict = [request_json[ticker]["company"] for ticker in request_json]
-        company_stats_df = pd.DataFrame(company_stats_dict).set_index("symbol")
+        stock_stats_df = pd.DataFrame([request_json[ticker]["stats"] for ticker in request_json]).set_index("symbol")
+        company_stats_df = pd.DataFrame([request_json[ticker]["company"] for ticker in request_json]).set_index("symbol")
+        price_df = pd.DataFrame([request_json[ticker]["quote"] for ticker in request_json]).set_index("symbol")
 
-        price_dict = [request_json[ticker]["quote"] for ticker in request_json]
-        price_df = pd.DataFrame(price_dict).set_index("symbol")
-
-        #return pd.merge([company_stats_df, stock_stats_df, price_df])
         return company_stats_df.merge(stock_stats_df,on='symbol').merge(price_df,on='symbol')
 
     def formatted_stock_stats(self):
@@ -88,7 +83,7 @@ def stockSelector(risk, sector, strategy, count):
 
 
 
-# Testing
+#Testing
 
 #data = loadData("Financials",url)
 #print(data.formatted_stock_stats()["peRatio"]["NYCB"])
